@@ -1,0 +1,298 @@
+{
+	"info": {
+		"_postman_id": "7f8d73a4-4414-42a3-857a-0fd9eebb605d",
+		"name": "Nasa API testing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20913070"
+	},
+	"item": [
+		{
+			"name": "get curiosity rover photos",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"var jsonData = JSON.parse(responseBody);\r",
+							"var SecondPhotoID_cur = jsonData.photos[1].id;\r",
+							"pm.environment.set(\"secondPhotoID_cur\", SecondPhotoID_cur);\r",
+							"\r",
+							"console.log(jsonData);\r",
+							"console.log(jsonData.photos[1].id);\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Validate the 'photos' array is present and contains at least one element\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData.photos).to.exist.and.to.be.an('array').with.lengthOf.at.least(1, \"Array should contain at least one element\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Validate the 'id' field of the first photo in the 'photos' array is a non-negative integer\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData.photos).to.exist.and.to.be.an('array').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");\r",
+							"    pm.expect(responseData.photos[0].id).to.exist.and.to.be.a('number').and.to.be.at.least(0, \"Value should be a non-negative integer\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Validate the 'sol' field of the first photo in the 'photos' array is a non-negative integer\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData.photos).to.be.an('array').that.is.not.empty;\r",
+							"\r",
+							"    const firstPhoto = responseData.photos[0];\r",
+							"    pm.expect(firstPhoto.sol).to.be.a('number').that.is.greaterThanOrEqual(0, \"'sol' field should be a non-negative integer\");\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "in",
+							"value": "query",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "oYK21ooD6ga6kU2GG0lCNxlFS2qq2pz2gzzoci91",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "api_key",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?earth_date=2022-01-22&page=1",
+					"protocol": "https",
+					"host": [
+						"api",
+						"nasa",
+						"gov"
+					],
+					"path": [
+						"mars-photos",
+						"api",
+						"v1",
+						"rovers",
+						"curiosity",
+						"photos"
+					],
+					"query": [
+						{
+							"key": "earth_date",
+							"value": "2022-01-22"
+						},
+						{
+							"key": "api_key",
+							"value": "oYK21ooD6ga6kU2GG0lCNxlFS2qq2pz2gzzoci91",
+							"disabled": true
+						},
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get spiritrover photos",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"var jsonData = JSON.parse(responseBody);\r",
+							"var SecondPhotoID_spirit = jsonData.photos[1].id;\r",
+							"pm.environment.set(\"secondPhotoID_spirit\", SecondPhotoID_spirit);\r",
+							"\r",
+							"console.log(jsonData);\r",
+							"console.log(jsonData.photos[1].id);\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "in",
+							"value": "query",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "oYK21ooD6ga6kU2GG0lCNxlFS2qq2pz2gzzoci91",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "api_key",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://api.nasa.gov/mars-photos/api/v1/rovers/spirit/photos?earth_date=2022-01-22&page=1",
+					"protocol": "https",
+					"host": [
+						"api",
+						"nasa",
+						"gov"
+					],
+					"path": [
+						"mars-photos",
+						"api",
+						"v1",
+						"rovers",
+						"spirit",
+						"photos"
+					],
+					"query": [
+						{
+							"key": "earth_date",
+							"value": "2022-01-22"
+						},
+						{
+							"key": "api_key",
+							"value": "oYK21ooD6ga6kU2GG0lCNxlFS2qq2pz2gzzoci91",
+							"disabled": true
+						},
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get opportunity rover photos",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"var jsonData = JSON.parse(responseBody);\r",
+							"var SecondPhotoID_opport = jsonData.photos[1].id;\r",
+							"pm.environment.set(\"secondPhotoID_opport\", SecondPhotoID_opport);\r",
+							"\r",
+							"console.log(jsonData);\r",
+							"console.log(jsonData.photos[1].id);\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "in",
+							"value": "query",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "oYK21ooD6ga6kU2GG0lCNxlFS2qq2pz2gzzoci91",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "api_key",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://api.nasa.gov/mars-photos/api/v1/rovers/opportunity/photos?earth_date=2022-01-22&page=1",
+					"protocol": "https",
+					"host": [
+						"api",
+						"nasa",
+						"gov"
+					],
+					"path": [
+						"mars-photos",
+						"api",
+						"v1",
+						"rovers",
+						"opportunity",
+						"photos"
+					],
+					"query": [
+						{
+							"key": "earth_date",
+							"value": "2022-01-22"
+						},
+						{
+							"key": "api_key",
+							"value": "oYK21ooD6ga6kU2GG0lCNxlFS2qq2pz2gzzoci91",
+							"disabled": true
+						},
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
