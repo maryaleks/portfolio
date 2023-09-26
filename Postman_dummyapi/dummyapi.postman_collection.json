@@ -8,6 +8,49 @@
 	"item": [
 		{
 			"name": "get users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var Body = pm.response.json();\r",
+							"console.log(Body);\r",
+							"\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Data array is present and contains at least one element\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.data).to.exist.and.to.be.an('array');\r",
+							"    pm.expect(responseData.data.length).to.be.at.least(1, \"Data array should contain at least one element\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Validate total field is a non-negative integer\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData.total).to.be.a('number');\r",
+							"    pm.expect(responseData.total).to.be.at.least(0, \"Total should be a non-negative integer\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"The page field should be a non-negative integer\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData.page).to.be.a('number');\r",
+							"    pm.expect(responseData.page).to.be.at.least(0, \"Value should be non-negative\");\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "noauth"
@@ -16,22 +59,29 @@
 				"header": [
 					{
 						"key": "app-id",
-						"value": "64edf0eb01c0218de1b489a5",
+						"value": "{{app_id}}",
 						"type": "text"
+					},
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
 					}
 				],
 				"url": {
-					"raw": "https://dummyapi.io/data/v1/user/64f65466af7503e5c27e861d",
-					"protocol": "https",
+					"raw": "{{URL}}/user?limit=55",
 					"host": [
-						"dummyapi",
-						"io"
+						"{{URL}}"
 					],
 					"path": [
-						"data",
-						"v1",
-						"user",
-						"64f65466af7503e5c27e861d"
+						"user"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "55"
+						}
 					]
 				}
 			},
@@ -39,6 +89,53 @@
 		},
 		{
 			"name": "create user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"console.log(jsonData);\r",
+							"var user_ID = jsonData.id;\r",
+							"console.log(user_ID);\r",
+							"\r",
+							"pm.collectionVariables.set(\"user_ID\", user_ID);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var FirstName_req = JSON.parse(request.data).firstName;\r",
+							"var FirstName_resp = JSON.parse(responseBody).firstName;\r",
+							"\r",
+							"pm.test(\"Проверить, что FirstName запроса равен FirstName из ответа\", function () {\r",
+							"    pm.expect(FirstName_req).to.eql(FirstName_resp);\r",
+							"    console.log(\"FirstName_req = \", FirstName_req);\r",
+							"    console.log(\"FirstName_resp = \", FirstName_resp);\r",
+							"});\r",
+							"\r",
+							"var LastName_req = JSON.parse(request.data).lastName;\r",
+							"var LastName_resp = JSON.parse(responseBody).lastName;\r",
+							"\r",
+							"pm.test(\"Проверить, что LastName запроса равен LastName из ответа\", function () {\r",
+							"    pm.expect(LastName_req).to.eql(LastName_resp);\r",
+							"    console.log(\"LastName_req = \", LastName_req);\r",
+							"    console.log(\"LastName_resp = \", LastName_resp);\r",
+							"});\r",
+							"\r",
+							"var email_req = JSON.parse(request.data).email;\r",
+							"var email_resp = JSON.parse(responseBody).email;\r",
+							"\r",
+							"pm.test(\"Проверить, что email запроса равен email из ответа\", function () {\r",
+							"    pm.expect(email_req).to.eql(email_resp);\r",
+							"    console.log(\"email_req = \", email_req);\r",
+							"    console.log(\"email_resp = \", email_resp);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "noauth"
@@ -47,13 +144,13 @@
 				"header": [
 					{
 						"key": "app-id",
-						"value": "64edf0eb01c0218de1b489a5",
+						"value": "{{app_id}}",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{ \r\n    \"lastName\": \"Stone\", \r\n    \"firstName\": \"Emma\",\r\n     \"email\": \"emma_s2@gnail.com\"\r\n     }\r\n",
+					"raw": "{\r\n    \"lastName\": \"{{$randomLastName}}\",\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"email\": \"{{$randomEmail}}\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -61,15 +158,243 @@
 					}
 				},
 				"url": {
-					"raw": "https://dummyapi.io/data/v1/user/create",
-					"protocol": "https",
+					"raw": "{{URL}}/user/create",
 					"host": [
-						"dummyapi",
-						"io"
+						"{{URL}}"
 					],
 					"path": [
-						"data",
-						"v1",
+						"user",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "app-id",
+						"value": "{{app_id}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/user/{{user_ID}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"user",
+						"{{user_ID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create user check 403",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 403\", function () {\r",
+							"    pm.response.to.have.status(403);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"lastName\": \"Stone\", \r\n    \"firstName\": \"Emma\",\r\n     \"email\": \"emma_s3@gnail.com\"\r\n     }\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/user/create",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"user",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "404 user is not found",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "app-id",
+						"value": "{{app_id}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/12345",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"12345"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create user by Get - 400",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "app-id",
+						"value": "{{app_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"lastName\": \"Stone\", \r\n    \"firstName\": \"Emma\",\r\n     \"email\": \"emma_s3@gnail.com\"\r\n     }\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/user/create",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"user",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "400 bad request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "app-id",
+						"value": "{{app_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"lastName\": \"\", \r\n    \"firstName\": \"Emma\",\r\n     \"email\": \"emma_s3@gnail.com\"\r\n     }\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/user/create",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
 						"user",
 						"create"
 					]
@@ -79,6 +404,19 @@
 		},
 		{
 			"name": "update user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "noauth"
@@ -87,13 +425,13 @@
 				"header": [
 					{
 						"key": "app-id",
-						"value": "64edf0eb01c0218de1b489a5",
+						"value": "{{app_id}}",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\": \"64f65466af7503e5c27e861d\",\r\n    \"firstName\": \"Emily\"\r\n\r\n}",
+					"raw": "{\r\n\r\n    \"firstName\": \"Emily\"\r\n\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -101,17 +439,13 @@
 					}
 				},
 				"url": {
-					"raw": "https://dummyapi.io/data/v1/user/64f65466af7503e5c27e861d",
-					"protocol": "https",
+					"raw": "{{URL}}/user/{{user_ID}}",
 					"host": [
-						"dummyapi",
-						"io"
+						"{{URL}}"
 					],
 					"path": [
-						"data",
-						"v1",
 						"user",
-						"64f65466af7503e5c27e861d"
+						"{{user_ID}}"
 					]
 				}
 			},
@@ -119,6 +453,19 @@
 		},
 		{
 			"name": "delete user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "noauth"
@@ -127,7 +474,7 @@
 				"header": [
 					{
 						"key": "app-id",
-						"value": "64edf0eb01c0218de1b489a5",
+						"value": "{{app_id}}",
 						"type": "text"
 					}
 				],
@@ -141,21 +488,51 @@
 					}
 				},
 				"url": {
-					"raw": "https://dummyapi.io/data/v1/user/64f65466af7503e5c27e861d",
-					"protocol": "https",
+					"raw": "{{URL}}/user/{{user_ID}}",
 					"host": [
-						"dummyapi",
-						"io"
+						"{{URL}}"
 					],
 					"path": [
-						"data",
-						"v1",
 						"user",
-						"64f65466af7503e5c27e861d"
+						"{{user_ID}}"
 					]
 				}
 			},
 			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "URL",
+			"value": ""
+		},
+		{
+			"key": "app_id",
+			"value": "64edf0eb01c0218de1b489a5"
+		},
+		{
+			"key": "user_ID",
+			"value": ""
 		}
 	]
 }
